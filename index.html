@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000; /* Black background */
+            color: #ffffff; /* White text */
+        }
+        #leaderboard {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 50%;
+        }
+        #leaderboard th, #leaderboard td {
+            border: 1px solid white; /* White border */
+            padding: 8px;
+            text-align: center;
+        }
+        #leaderboard th {
+            background-color: #333333; /* Darker header background */
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #444444; /* Button background */
+            color: #ffffff; /* Button text color */
+            border: none; /* No border */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        button:hover {
+            background-color: #555555; /* Lighter button on hover */
+        }
+    </style>
+</head>
+<body>
+
+<h1 strong ><span id="totalCount">0</span></h1>
+<table id="leaderboard">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const keyCounts = {};
+    let totalTyped = 0;
+
+    document.addEventListener('keydown', (event) => {
+        const key = event.key;
+
+        if (key.length === 1) {
+            totalTyped++;
+            document.getElementById('totalCount').innerText = totalTyped;
+
+            if (!keyCounts[key]) {
+                keyCounts[key] = 0;
+            }
+            keyCounts[key]++;
+            
+            updateLeaderboard();
+        }
+    });
+
+    function updateLeaderboard() {
+        const sortedKeys = Object.keys(keyCounts).sort((a, b) => {
+            if (keyCounts[b] !== keyCounts[a]) {
+                return keyCounts[b] - keyCounts[a]; // Sort by count descending
+            } else {
+                return a.localeCompare(b); // Sort alphabetically
+            }
+        });
+
+        const tbody = document.querySelector('#leaderboard tbody');
+        tbody.innerHTML = ''; // Clear previous rows
+
+        // Show only the top 10 keys
+        const topKeys = sortedKeys.slice(0, 10);
+        
+        topKeys.forEach(key => {
+            const row = document.createElement('tr');
+            const cellKey = document.createElement('td');
+            const cellCount = document.createElement('td');
+
+            cellKey.innerText = key;
+            cellCount.innerText = keyCounts[key];
+
+            row.appendChild(cellKey);
+            row.appendChild(cellCount);
+            tbody.appendChild(row);
+        });
+    }
+</script>
+
+</body>
+</html>
